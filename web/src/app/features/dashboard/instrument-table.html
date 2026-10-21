@@ -1,0 +1,36 @@
+<div class="scroll" role="region" aria-labelledby="instruments-caption" tabindex="0">
+  <table>
+    <caption id="instruments-caption">
+      Instruments
+      <span class="count">{{ rows().length }}</span>
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Symbol</th>
+        <th scope="col">Last price</th>
+        <th scope="col">Spread</th>
+        <th scope="col">Volume</th>
+        <th scope="col">VWAP</th>
+        <th scope="col">Imbalance</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.symbol) {
+        <tr>
+          <th scope="row">{{ row.symbol }}</th>
+          <td><app-value [text]="usd(row.lastPriceCents)" /></td>
+          <td><app-value [text]="usd(row.spreadCents)" /></td>
+          <td><app-value [text]="integer(row.volume)" /></td>
+          <td><app-value [text]="usd(row.vwapCents)" /></td>
+          <td [attr.data-trend]="trend(row.imbalance)">
+            <app-value [text]="imbalance(row.imbalance)" />
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td class="empty" colspan="6">Waiting for market data…</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

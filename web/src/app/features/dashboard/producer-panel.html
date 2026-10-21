@@ -1,0 +1,44 @@
+<header>
+  <h2>Producer</h2>
+  <p class="status" aria-live="polite">
+    <app-status-badge [status]="status()" />
+    @if (runId() > 0) {
+      <span>run #{{ runId() }}</span>
+    }
+  </p>
+  <button
+    type="button"
+    class="btn toggle"
+    [class.warn]="paused()"
+    [disabled]="locked()"
+    (click)="toggle()"
+  >
+    <span class="glyph" aria-hidden="true">{{ paused() ? '▶' : '❚❚' }}</span>
+    {{ paused() ? 'Resume' : 'Pause' }}
+  </button>
+</header>
+<dl>
+  <div>
+    <dt>Seed</dt>
+    <dd>{{ formatSeed(seed()) }}</dd>
+  </div>
+  <div>
+    <dt>Batches</dt>
+    <dd>{{ integer(stats().batches) }}</dd>
+  </div>
+  <div>
+    <dt>Updates</dt>
+    <dd>{{ integer(stats().updates) }}</dd>
+  </div>
+  <div>
+    <dt>Nominal rate</dt>
+    <dd>{{ rate() }}</dd>
+  </div>
+  <div class="wide">
+    <dt>Settings</dt>
+    <dd>
+      {{ settings().instrumentCount }} instruments · {{ settings().updatesPerBatch }} updates per
+      batch · every {{ settings().batchIntervalMs }} ms
+    </dd>
+  </div>
+</dl>
