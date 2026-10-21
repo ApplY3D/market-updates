@@ -1,0 +1,43 @@
+<form [formRoot]="form">
+  @for (f of fields; track f.key) {
+    @let field = form[f.key];
+    @let showError = field().touched() && field().invalid();
+    <div class="field">
+      <label [for]="f.key">{{ f.label }}</label>
+      <span class="control">
+        <input
+          type="number"
+          inputmode="numeric"
+          step="1"
+          [id]="f.key"
+          [formField]="field"
+          [attr.aria-invalid]="showError"
+          [attr.aria-describedby]="f.key + '-hint' + (showError ? ' ' + f.key + '-error' : '')"
+        />
+        @if (f.unit) {
+          <span class="unit" aria-hidden="true">{{ f.unit }}</span>
+        }
+      </span>
+      <p class="hint" [id]="f.key + '-hint'">
+        {{ f.hint }} · {{ limits[f.key].min }}–{{ limits[f.key].max }} {{ f.unit }}
+      </p>
+      @if (showError) {
+        <p class="error" [id]="f.key + '-error'">
+          {{ field().errors()[0]?.message ?? 'Enter a whole number' }}
+        </p>
+      }
+    </div>
+  }
+
+  <p class="summary">
+    Nominal rate <strong>{{ rate() }}</strong>
+    @if (changed()) {
+      <span class="unsaved">Unsaved changes</span>
+    }
+  </p>
+
+  <div class="actions">
+    <button type="button" class="btn" (click)="resetToDefaults()">Reset to defaults</button>
+    <button type="submit" class="btn primary" [disabled]="form().invalid()">Apply</button>
+  </div>
+</form>
