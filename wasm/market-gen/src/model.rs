@@ -1,7 +1,3 @@
-//! Simplified market model. Each instrument keeps a mid price and resting book
-//! quantities between calls; every update moves that state a little and emits
-//! one trade at the current bid or ask.
-
 use core::fmt;
 
 use crate::rng::Rng;
@@ -14,13 +10,11 @@ pub const MAX_BATCH_SIZE: u32 = 100_000;
 
 const MIN_MID_CENTS: f64 = 100.0;
 const MAX_MID_CENTS: f64 = 10_000_000.0;
-/// Per-update standard deviation of the mid, as a fraction of price.
+/// Per-update standard deviation of the mid as a fraction of price.
 const VOLATILITY: f64 = 0.0005;
-/// How far (in standard deviations) book imbalance pushes the mid.
+/// Mid drift per unit of book imbalance, in standard deviations.
 const IMBALANCE_DRIFT: f64 = 0.3;
-/// How much book imbalance tilts the trade side towards buys or sells.
 const SIDE_BIAS: f64 = 0.25;
-/// Minimum quoted spread as a fraction of price (2 bps).
 const SPREAD_FRACTION: f64 = 0.0002;
 const BOOK_MEAN: f64 = 500.0;
 const BOOK_REVERSION: f64 = 0.1;
@@ -116,7 +110,6 @@ impl MarketGenerator {
         self.instruments.len() as u32
     }
 
-    /// Generates `batch_size` updates packed as `UPDATE_STRIDE` fields each.
     pub fn generate(&mut self, batch_size: u32) -> Result<Vec<u32>, ConfigError> {
         if !(1..=MAX_BATCH_SIZE).contains(&batch_size) {
             return Err(ConfigError::BatchSize(batch_size));
@@ -136,24 +129,20 @@ impl MarketGenerator {
 }
 
 fn step(rng: &mut Rng, state: &mut InstrumentState, instrument: u32) -> MarketUpdate {
-    // Resting quantities drift around a mean and never go negative.
     state.bid_quantity = walk_book(rng, state.bid_quantity);
     state.ask_quantity = walk_book(rng, state.ask_quantity);
     let pressure = imbalance(state.bid_quantity, state.ask_quantity);
 
-    // Mid moves proportionally to price, nudged by book pressure.
     let mid = f64::from(state.mid_cents);
     let shock = rng.normal() + IMBALANCE_DRIFT * pressure;
     let next_mid = (mid + (mid * VOLATILITY * shock).round()).clamp(MIN_MID_CENTS, MAX_MID_CENTS);
     state.mid_cents = next_mid as u32;
 
-    // Quote around the mid with a spread of at least one cent.
     let min_spread = ((next_mid * SPREAD_FRACTION).round() as u32).max(1);
     let spread = rng.between(min_spread, min_spread * 2);
     let bid_cents = state.mid_cents.saturating_sub(spread / 2).max(1);
     let ask_cents = bid_cents + spread;
 
-    // The trade takes liquidity from one side of the quote.
     let trade_quantity =
         (1.0 + rng.exponential(TRADE_QUANTITY_MEAN)).min(MAX_TRADE_QUANTITY) as u32;
     let is_buy = rng.chance(0.5 + SIDE_BIAS * pressure);

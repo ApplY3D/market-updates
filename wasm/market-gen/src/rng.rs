@@ -1,5 +1,4 @@
-//! Small, dependency-free PRNG. SplitMix64 is fast, has a full 2^64 period and
-//! is good enough for simulation; it is not cryptographically secure.
+//! SplitMix64: fast, full 2^64 period, good enough for simulation (not cryptographic).
 
 #[derive(Debug, Clone)]
 pub struct Rng {
@@ -19,12 +18,11 @@ impl Rng {
         z ^ (z >> 31)
     }
 
-    /// Uniform in `[0, 1)` with 53 bits of precision.
     pub fn next_f64(&mut self) -> f64 {
         (self.next_u64() >> 11) as f64 * (1.0 / (1u64 << 53) as f64)
     }
 
-    /// Uniform in `[0, n)` without modulo bias (Lemire's method). `n` must be > 0.
+    /// Uniform in `[0, n)` without modulo bias (Lemire's method).
     pub fn below(&mut self, n: u32) -> u32 {
         debug_assert!(n > 0);
         let n = u64::from(n);
@@ -37,7 +35,6 @@ impl Rng {
         }
     }
 
-    /// Uniform in `[lo, hi]`.
     pub fn between(&mut self, lo: u32, hi: u32) -> u32 {
         debug_assert!(lo <= hi);
         lo + self.below(hi - lo + 1)
@@ -47,14 +44,13 @@ impl Rng {
         self.next_f64() < p
     }
 
-    /// Standard normal sample (Box–Muller).
+    /// Box–Muller.
     pub fn normal(&mut self) -> f64 {
         let u1 = 1.0 - self.next_f64(); // (0, 1], avoids ln(0)
         let u2 = self.next_f64();
         (-2.0 * u1.ln()).sqrt() * (core::f64::consts::TAU * u2).cos()
     }
 
-    /// Exponential sample with the given mean.
     pub fn exponential(&mut self, mean: f64) -> f64 {
         -(1.0 - self.next_f64()).ln() * mean
     }
