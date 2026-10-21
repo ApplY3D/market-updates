@@ -20,7 +20,6 @@ export type ProducerCommand =
 
 export type ProducerEvent =
   | { readonly type: 'ready' }
-  | { readonly type: 'state'; readonly runId: number; readonly state: 'running' | 'paused' }
   | {
       readonly type: 'snapshot';
       readonly runId: number;

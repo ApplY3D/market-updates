@@ -65,12 +65,10 @@ export class ProducerEngine {
     run.cancelTick?.();
     run.cancelTick = null;
     run.state = 'paused';
-    this.emit({ type: 'state', runId: run.id, state: 'paused' });
   }
 
   #resume(run: Run): void {
     run.state = 'running';
-    this.emit({ type: 'state', runId: run.id, state: 'running' });
     this.#tick(run);
   }
 

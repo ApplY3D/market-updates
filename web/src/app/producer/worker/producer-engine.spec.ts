@@ -72,8 +72,7 @@ describe('ProducerEngine', () => {
   it('starts running and emits an immediate snapshot with exact totals', () => {
     const { send, drain, generators, scheduler } = setup();
     send(start());
-    const [state, snapshot, ...rest] = drain();
-    expect(state).toEqual({ type: 'state', runId: 1, state: 'running' });
+    const [snapshot, ...rest] = drain();
     expect(snapshot).toMatchObject({
       type: 'snapshot',
       runId: 1,
@@ -116,13 +115,14 @@ describe('ProducerEngine', () => {
     scheduler.fire();
     drain();
     send({ type: 'pause', runId: 1 });
-    expect(drain()).toEqual([{ type: 'state', runId: 1, state: 'paused' }]);
     expect(scheduler.pending).toHaveLength(0);
+    expect(() => scheduler.fire()).toThrow();
+    expect(drain()).toEqual([]);
 
     scheduler.time = 10_000;
     send({ type: 'resume', runId: 1 });
     const events = drain();
-    expect(events[0]).toEqual({ type: 'state', runId: 1, state: 'running' });
+    expect(events).toMatchObject([{ type: 'snapshot', runId: 1 }]);
     expect(stats(events)).toEqual([{ batches: 3, updates: 9, lastBatchAt: 10_000 }]);
     expect(scheduler.pending).toHaveLength(1);
   });
@@ -134,10 +134,11 @@ describe('ProducerEngine', () => {
     send({ type: 'pause', runId: 1 });
     send({ type: 'resume', runId: 2 });
     expect(drain()).toEqual([]);
+    expect(scheduler.pending).toHaveLength(1);
     send({ type: 'pause', runId: 2 });
     send({ type: 'pause', runId: 2 });
     send({ type: 'resume', runId: 1 });
-    expect(drain()).toEqual([{ type: 'state', runId: 2, state: 'paused' }]);
+    expect(drain()).toEqual([]);
     expect(scheduler.pending).toHaveLength(0);
   });
 
@@ -150,10 +151,7 @@ describe('ProducerEngine', () => {
     expect(generators[0]?.dispose).toHaveBeenCalledOnce();
     expect(generators).toHaveLength(2);
     const events = drain();
-    expect(events).toMatchObject([
-      { type: 'state', runId: 2 },
-      { type: 'snapshot', runId: 2 },
-    ]);
+    expect(events).toMatchObject([{ type: 'snapshot', runId: 2 }]);
     expect(stats(events)).toEqual([{ batches: 1, updates: 5, lastBatchAt: 500 }]);
     expect(scheduler.pending).toHaveLength(1);
   });
