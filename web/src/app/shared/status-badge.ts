@@ -1,16 +1,9 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import type { ProducerStatus } from '../producer/producer.store';
-
-const LABELS: Record<ProducerStatus, string> = {
-  loading: 'Loading',
-  running: 'Running',
-  paused: 'Paused',
-  error: 'Error',
-};
 
 @Component({
   selector: 'app-status-badge',
-  template: `<span class="dot" aria-hidden="true"></span>{{ label() }}`,
+  template: `<span class="dot" aria-hidden="true"></span>{{ status() }}`,
   host: { '[attr.data-status]': 'status()' },
   styles: `
     :host {
@@ -50,5 +43,4 @@ const LABELS: Record<ProducerStatus, string> = {
 })
 export class StatusBadge {
   readonly status = input.required<ProducerStatus>();
-  protected readonly label = computed(() => LABELS[this.status()]);
 }

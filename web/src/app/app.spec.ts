@@ -21,7 +21,7 @@ describe('App', () => {
     expect(links.map((a) => a.getAttribute('href'))).toEqual(['/dashboard', '/settings']);
     expect(links[1]?.getAttribute('aria-current')).toBe('page');
     expect(links[0]?.hasAttribute('aria-current')).toBe(false);
-    expect(el.querySelector('header app-status-badge')?.textContent).toContain('Running');
+    expect(el.querySelector('header app-status-badge')?.textContent).toContain('running');
   });
 
   it('redirects unknown paths to the dashboard', async () => {

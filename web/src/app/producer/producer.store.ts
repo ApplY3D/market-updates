@@ -5,7 +5,6 @@ import {
   inject,
   InjectionToken,
   Service,
-  Signal,
   signal,
 } from '@angular/core';
 import { InstrumentMetrics, MarketMetrics } from '../domain/metrics';
@@ -32,7 +31,7 @@ const newRun = (id: number, settings: ProducerSettings, seed: bigint): Run => ({
   settings,
   seed,
   rows: new MarketMetrics(settings.instrumentCount).snapshot(),
-  stats: { batches: 0, updates: 0, lastBatchAt: null },
+  stats: { batches: 0, updates: 0 },
 });
 
 const isStale = (event: ProducerEvent, runId: number): boolean =>
@@ -55,7 +54,7 @@ export class ProducerStore {
   readonly error = this.#error.asReadonly();
   readonly settings = computed(() => this.#run().settings);
   readonly runId = computed(() => this.#run().id);
-  readonly seed: Signal<bigint | null> = computed(() => this.#run().seed);
+  readonly seed = computed(() => this.#run().seed);
   readonly rows = computed(() => this.#run().rows);
   readonly stats = computed(() => this.#run().stats);
 

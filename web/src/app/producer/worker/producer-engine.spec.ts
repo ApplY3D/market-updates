@@ -76,7 +76,7 @@ describe('ProducerEngine', () => {
     expect(snapshot).toMatchObject({
       type: 'snapshot',
       runId: 1,
-      stats: { batches: 1, updates: 3, lastBatchAt: 0 },
+      stats: { batches: 1, updates: 3 },
     });
     expect(snapshot?.type === 'snapshot' && snapshot.rows.map((r) => r.volume)).toEqual([20, 10]);
     expect(rest).toEqual([]);
@@ -90,7 +90,7 @@ describe('ProducerEngine', () => {
     scheduler.fire();
     scheduler.fire();
     const events = drain();
-    expect(stats(events).at(-1)).toEqual({ batches: 3, updates: 9, lastBatchAt: 1_000 });
+    expect(stats(events).at(-1)).toEqual({ batches: 3, updates: 9 });
     expect(events.at(-1)?.type === 'snapshot' && events.at(-1)).toMatchObject({
       rows: [{ volume: 60 }, { volume: 30 }],
     });
@@ -123,7 +123,7 @@ describe('ProducerEngine', () => {
     send({ type: 'resume', runId: 1 });
     const events = drain();
     expect(events).toMatchObject([{ type: 'snapshot', runId: 1 }]);
-    expect(stats(events)).toEqual([{ batches: 3, updates: 9, lastBatchAt: 10_000 }]);
+    expect(stats(events)).toEqual([{ batches: 3, updates: 9 }]);
     expect(scheduler.pending).toHaveLength(1);
   });
 
@@ -152,7 +152,7 @@ describe('ProducerEngine', () => {
     expect(generators).toHaveLength(2);
     const events = drain();
     expect(events).toMatchObject([{ type: 'snapshot', runId: 2 }]);
-    expect(stats(events)).toEqual([{ batches: 1, updates: 5, lastBatchAt: 500 }]);
+    expect(stats(events)).toEqual([{ batches: 1, updates: 5 }]);
     expect(scheduler.pending).toHaveLength(1);
   });
 

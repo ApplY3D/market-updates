@@ -25,7 +25,7 @@ const SETTINGS: ProducerSettings = {
   updatesPerBatch: 10,
   batchIntervalMs: 100,
 };
-const STATS = { batches: 2, updates: 20, lastBatchAt: 1_000 };
+const STATS = { batches: 2, updates: 20 };
 const ROWS = new MarketMetrics(5).snapshot().map((row) => ({ ...row, volume: 7 }));
 
 const setup = () => {
@@ -91,7 +91,7 @@ describe('ProducerStore', () => {
     expect(store.runId()).toBe(2);
     expect(store.settings()).toEqual(SETTINGS);
     expect(store.rows()).toEqual(new MarketMetrics(3).snapshot());
-    expect(store.stats()).toEqual({ batches: 0, updates: 0, lastBatchAt: null });
+    expect(store.stats()).toEqual({ batches: 0, updates: 0 });
     expect(lastSent()).toEqual({ type: 'start', runId: 2, settings: SETTINGS, seed: 102n });
     expect(store.status()).toBe('running');
   });

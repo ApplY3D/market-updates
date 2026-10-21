@@ -55,7 +55,7 @@ export class ProducerEngine {
       generator,
       metrics: new MarketMetrics(settings.instrumentCount),
       state: 'running',
-      stats: { batches: 0, updates: 0, lastBatchAt: null },
+      stats: { batches: 0, updates: 0 },
       cancelTick: null,
     };
     this.#resume(this.#run);
@@ -83,14 +83,9 @@ export class ProducerEngine {
       this.#fail(run.id, errorMessage(error));
       return this.#stop();
     }
-    const finishedAt = this.scheduler.now();
-    run.stats = {
-      batches: run.stats.batches + 1,
-      updates: run.stats.updates + updates,
-      lastBatchAt: finishedAt,
-    };
+    const delay = Math.max(0, run.settings.batchIntervalMs - (this.scheduler.now() - startedAt));
+    run.stats = { batches: run.stats.batches + 1, updates: run.stats.updates + updates };
     this.emit({ type: 'snapshot', runId: run.id, rows: run.metrics.snapshot(), stats: run.stats });
-    const delay = Math.max(0, run.settings.batchIntervalMs - (finishedAt - startedAt));
     run.cancelTick = this.scheduler.schedule(() => this.#tick(run), delay);
   }
 

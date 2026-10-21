@@ -26,7 +26,6 @@ describe('format', () => {
     expect(UNAVAILABLE).toBe('—');
     expect(formatUsdCents(null)).toBe('—');
     expect(formatImbalance(null)).toBe('—');
-    expect(formatSeed(null)).toBe('—');
   });
 
   it('formats volume as a grouped integer', () => {

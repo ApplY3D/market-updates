@@ -23,9 +23,7 @@ export const formatImbalance = orUnavailable((value: number) =>
   signed.format(value).replace('-', '−'),
 );
 
-export const formatSeed = orUnavailable(
-  (seed: bigint) => `0x${seed.toString(16).padStart(16, '0')}`,
-);
+export const formatSeed = (seed: bigint): string => `0x${seed.toString(16).padStart(16, '0')}`;
 
 export const formatRate = (perSecond: number): string => `${rate.format(perSecond)} updates/s`;
 

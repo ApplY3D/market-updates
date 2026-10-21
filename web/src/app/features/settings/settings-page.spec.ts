@@ -63,6 +63,10 @@ describe('SettingsPage', () => {
     expect(error(id)).toBe(message);
     expect(field(id).getAttribute('aria-invalid')).toBe('true');
     expect(apply().disabled).toBe(true);
+
+    el().querySelector('form')!.dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    expect(store.apply).not.toHaveBeenCalled();
   });
 
   it('edits a draft without touching the producer', async () => {
@@ -72,11 +76,11 @@ describe('SettingsPage', () => {
     expect(store.apply).not.toHaveBeenCalled();
   });
 
-  it('keeps showing the rate while an unrelated field is invalid', async () => {
+  it('hides the rate while any field is invalid', async () => {
     await enter('instrumentCount', '75');
-    expect(el().textContent).toContain('250 updates/s');
-    await enter('batchIntervalMs', '10');
     expect(el().textContent).toContain('Nominal rate —');
+    await enter('instrumentCount', '7');
+    expect(el().textContent).toContain('250 updates/s');
   });
 
   it('resets the draft to defaults only', async () => {

@@ -4,7 +4,6 @@ import { ProducerSettings } from '../domain/producer-settings';
 export interface RunStats {
   readonly batches: number;
   readonly updates: number;
-  readonly lastBatchAt: number | null;
 }
 
 export type ProducerCommand =

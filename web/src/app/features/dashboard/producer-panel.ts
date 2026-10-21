@@ -15,7 +15,7 @@ import { StatusBadge } from '../../shared/status-badge';
 export class ProducerPanel {
   readonly status = input.required<ProducerStatus>();
   readonly runId = input.required<number>();
-  readonly seed = input.required<bigint | null>();
+  readonly seed = input.required<bigint>();
   readonly stats = input.required<RunStats>();
   readonly settings = input.required<ProducerSettings>();
   readonly pause = output();

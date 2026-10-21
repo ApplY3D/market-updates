@@ -4,8 +4,8 @@ use crate::rng::Rng;
 
 /// Packed layout: `[instrument, priceCents, tradeQuantity, bidCents, askCents, bidQuantity, askQuantity]`.
 pub const UPDATE_STRIDE: usize = 7;
-pub const MAX_INSTRUMENTS: u32 = 1_000;
-pub const MAX_BATCH_SIZE: u32 = 100_000;
+const MAX_INSTRUMENTS: u32 = 1_000;
+const MAX_BATCH_SIZE: u32 = 100_000;
 
 const MIN_MID_CENTS: f64 = 100.0;
 const MAX_MID_CENTS: f64 = 10_000_000.0;
@@ -23,18 +23,18 @@ const TRADE_QUANTITY_MEAN: f64 = 40.0;
 const MAX_TRADE_QUANTITY: f64 = 1_000.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct MarketUpdate {
-    pub instrument: u32,
-    pub price_cents: u32,
-    pub trade_quantity: u32,
-    pub bid_cents: u32,
-    pub ask_cents: u32,
-    pub bid_quantity: u32,
-    pub ask_quantity: u32,
+struct MarketUpdate {
+    instrument: u32,
+    price_cents: u32,
+    trade_quantity: u32,
+    bid_cents: u32,
+    ask_cents: u32,
+    bid_quantity: u32,
+    ask_quantity: u32,
 }
 
 impl MarketUpdate {
-    pub fn to_fields(self) -> [u32; UPDATE_STRIDE] {
+    fn to_fields(self) -> [u32; UPDATE_STRIDE] {
         [
             self.instrument,
             self.price_cents,
@@ -46,7 +46,8 @@ impl MarketUpdate {
         ]
     }
 
-    pub fn from_fields(f: &[u32]) -> Self {
+    #[cfg(test)]
+    fn from_fields(f: &[u32]) -> Self {
         Self {
             instrument: f[0],
             price_cents: f[1],
@@ -103,10 +104,6 @@ impl MarketGenerator {
         Ok(Self { rng, instruments })
     }
 
-    pub fn instrument_count(&self) -> u32 {
-        self.instruments.len() as u32
-    }
-
     pub fn generate(&mut self, batch_size: u32) -> Result<Vec<u32>, ConfigError> {
         if !(1..=MAX_BATCH_SIZE).contains(&batch_size) {
             return Err(ConfigError::BatchSize(batch_size));
@@ -114,8 +111,8 @@ impl MarketGenerator {
         Ok((0..batch_size).flat_map(|_| self.next_update().to_fields()).collect())
     }
 
-    pub fn next_update(&mut self) -> MarketUpdate {
-        let instrument = self.rng.below(self.instrument_count());
+    fn next_update(&mut self) -> MarketUpdate {
+        let instrument = self.rng.below(self.instruments.len() as u32);
         step(&mut self.rng, &mut self.instruments[instrument as usize], instrument)
     }
 }

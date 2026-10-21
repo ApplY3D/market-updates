@@ -2,8 +2,6 @@ import { Component, computed, input, linkedSignal, output } from '@angular/core'
 import { form, FormField, FormRoot, max, min, required, validate } from '@angular/forms/signals';
 import {
   DEFAULT_SETTINGS,
-  isValidSetting,
-  isValidSettings,
   nominalRate,
   SETTINGS_LIMITS,
   type ProducerSettings,
@@ -18,13 +16,6 @@ const FIELDS = [
   { key: 'updatesPerBatch', label: 'Updates per batch', hint: 'Across all instruments', unit: '' },
   { key: 'batchIntervalMs', label: 'Batch interval', hint: 'Time between batches', unit: 'ms' },
 ] as const satisfies readonly { key: SettingKey; label: string; hint: string; unit: string }[];
-
-const isSet = (key: SettingKey, value: number | null): value is number =>
-  value !== null && isValidSetting(key, value);
-
-// `null` fails the integer check, so a valid draft has no empty fields.
-const isComplete = (draft: Draft): draft is ProducerSettings =>
-  isValidSettings(draft as ProducerSettings);
 
 @Component({
   selector: 'app-settings-form',
@@ -58,20 +49,15 @@ export class SettingsForm {
     },
     {
       submission: {
-        action: async (field) => {
-          const draft = field().value();
-          if (isComplete(draft)) this.submitted.emit({ ...draft });
-        },
+        // Runs only when no validator fails, so the draft has no empty or out-of-range fields.
+        action: async (field) => this.submitted.emit(field().value() as ProducerSettings),
       },
     },
   );
 
-  protected readonly rate = computed(() => {
-    const { updatesPerBatch, batchIntervalMs } = this.draft();
-    return isSet('updatesPerBatch', updatesPerBatch) && isSet('batchIntervalMs', batchIntervalMs)
-      ? formatRate(nominalRate({ ...this.current(), updatesPerBatch, batchIntervalMs }))
-      : UNAVAILABLE;
-  });
+  protected readonly rate = computed(() =>
+    this.form().valid() ? formatRate(nominalRate(this.draft() as ProducerSettings)) : UNAVAILABLE,
+  );
 
   protected readonly changed = computed(() =>
     FIELDS.some(({ key }) => this.draft()[key] !== this.current()[key]),

@@ -36,7 +36,7 @@ describe('DashboardPage', () => {
         imbalance: null,
       },
     ]);
-    store.stats.set({ batches: 1200, updates: 120_000, lastBatchAt: 0 });
+    store.stats.set({ batches: 1200, updates: 120_000 });
     TestBed.configureTestingModule({ providers: [provideFakeProducerStore(store)] });
     fixture = TestBed.createComponent(DashboardPage);
     await fixture.whenStable();
@@ -60,7 +60,7 @@ describe('DashboardPage', () => {
     expect(table.querySelector('caption')).not.toBeNull();
     expect(table.querySelectorAll('th[scope="col"]')).toHaveLength(6);
     expect(table.closest('[aria-live]')).toBeNull();
-    expect(el().querySelector('[aria-live="polite"]')?.textContent).toContain('Running');
+    expect(el().querySelector('[aria-live="polite"]')?.textContent).toContain('running');
   });
 
   it('shows run details, stats and the nominal rate', () => {
