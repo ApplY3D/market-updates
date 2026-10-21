@@ -1,0 +1,7 @@
+packages:
+  - web
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  lmdb: false
+  msgpackr-extract: false

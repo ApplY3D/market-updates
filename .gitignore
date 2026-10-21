@@ -7,3 +7,4 @@ web/src/wasm/pkg/
 web/public/wasm/
 .DS_Store
 *.log
+out-tsc/

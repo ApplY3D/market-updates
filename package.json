@@ -1,0 +1,16 @@
+{
+  "name": "realtime-fintech-dashboard",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build:wasm": "wasm-pack build wasm/market-gen --target web --release --no-pack --out-dir ../../web/src/wasm/pkg",
+    "test:wasm": "cargo test --manifest-path wasm/market-gen/Cargo.toml",
+    "lint:wasm": "cargo fmt --manifest-path wasm/market-gen/Cargo.toml --check && cargo clippy --manifest-path wasm/market-gen/Cargo.toml --all-targets -- -D warnings",
+    "start": "pnpm build:wasm && pnpm --filter web start",
+    "build": "pnpm build:wasm && pnpm --filter web build",
+    "test": "pnpm test:wasm && pnpm build:wasm && pnpm --filter web test"
+  }
+}
