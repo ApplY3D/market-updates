@@ -1,1 +1,108 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: light dark;
+
+  --bg: light-dark(#f4f6f8, #0a0d12);
+  --surface: light-dark(#ffffff, #10151c);
+  --surface-2: light-dark(#eceff3, #161d27);
+  --border: light-dark(#d5dbe2, #232c38);
+  --border-subtle: light-dark(#e7ebef, #18202a);
+  --text: light-dark(#111820, #d6dde6);
+  --muted: light-dark(#56616e, #8592a3);
+  --accent: light-dark(#0b5cb8, #5ea8ff);
+  --up: light-dark(#0b7a3b, #3fcf80);
+  --down: light-dark(#b42318, #ff6b66);
+  --down-bg: light-dark(#fdeceb, #2a1414);
+  --warn: light-dark(#8a5a00, #f2b54a);
+
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --radius: 4px;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 0.875rem / 1.45 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font: 600 var(--text-sm) / 1.6 var(--font-ui);
+  cursor: pointer;
+  transition:
+    background-color 120ms,
+    border-color 120ms;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+.btn.warn {
+  border-color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 18%, var(--surface));
+  color: var(--warn);
+}
+
+.btn.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,1 +1,17 @@
-<router-outlet />
+<header>
+  <a class="brand" routerLink="/dashboard">
+    <span class="mark" aria-hidden="true">▮▯</span>
+    Market Dashboard
+  </a>
+  <nav aria-label="Main">
+    <a routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">Dashboard</a>
+    <a routerLink="/settings" routerLinkActive="active" ariaCurrentWhenActive="page">Settings</a>
+  </nav>
+  <p class="producer">
+    <span class="visually-hidden">Producer status:</span>
+    <app-status-badge [status]="store.status()" />
+  </p>
+</header>
+<main>
+  <router-outlet />
+</main>
