@@ -61,58 +61,34 @@ mod tests {
     use super::*;
 
     #[test]
-    fn same_seed_gives_same_sequence() {
-        let mut a = Rng::new(42);
-        let mut b = Rng::new(42);
-        for _ in 0..1_000 {
-            assert_eq!(a.next_u64(), b.next_u64());
-        }
-    }
-
-    #[test]
-    fn different_seeds_diverge() {
-        let mut a = Rng::new(1);
-        let mut b = Rng::new(2);
-        assert!((0..10).any(|_| a.next_u64() != b.next_u64()));
+    fn same_seed_gives_same_sequence_and_different_seeds_diverge() {
+        let (mut a, mut b, mut c) = (Rng::new(42), Rng::new(42), Rng::new(43));
+        assert!((0..1_000).all(|_| a.next_u64() == b.next_u64()));
+        assert!((0..10).any(|_| a.next_u64() != c.next_u64()));
     }
 
     #[test]
     fn next_f64_is_in_unit_interval() {
         let mut rng = Rng::new(7);
-        for _ in 0..100_000 {
-            let x = rng.next_f64();
-            assert!((0.0..1.0).contains(&x));
-        }
+        assert!((0..100_000).all(|_| (0.0..1.0).contains(&rng.next_f64())));
     }
 
     #[test]
-    fn below_stays_in_range_and_covers_it() {
-        let mut rng = Rng::new(7);
-        let mut seen = [false; 5];
-        for _ in 0..10_000 {
-            let x = rng.below(5);
-            assert!(x < 5);
-            seen[x as usize] = true;
-        }
-        assert!(seen.iter().all(|&s| s));
+    fn between_is_inclusive_and_covers_range() {
+        let mut rng = Rng::new(3);
+        let values: Vec<u32> = (0..10_000).map(|_| rng.between(10, 12)).collect();
+        assert!(values.iter().all(|v| (10..=12).contains(v)));
+        assert!((10..=12).all(|v| values.contains(&v)));
         assert_eq!(rng.below(1), 0);
     }
 
     #[test]
-    fn between_is_inclusive() {
-        let mut rng = Rng::new(3);
-        let values: Vec<u32> = (0..10_000).map(|_| rng.between(10, 12)).collect();
-        assert!(values.iter().all(|v| (10..=12).contains(v)));
-        assert!(values.contains(&10) && values.contains(&12));
-    }
-
-    #[test]
-    fn normal_has_roughly_zero_mean_and_unit_variance() {
+    fn normal_has_zero_mean_and_unit_variance() {
         let mut rng = Rng::new(11);
-        let n = 200_000;
-        let samples: Vec<f64> = (0..n).map(|_| rng.normal()).collect();
-        let mean = samples.iter().sum::<f64>() / n as f64;
-        let var = samples.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / n as f64;
+        let samples: Vec<f64> = (0..200_000).map(|_| rng.normal()).collect();
+        let n = samples.len() as f64;
+        let mean = samples.iter().sum::<f64>() / n;
+        let var = samples.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / n;
         assert!(mean.abs() < 0.02, "mean {mean}");
         assert!((var - 1.0).abs() < 0.02, "variance {var}");
     }

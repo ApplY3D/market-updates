@@ -25,6 +25,6 @@
   },
   "lint-staged": {
     "*.{ts,html,css,json,md,yml,yaml,mjs}": "prettier --write",
-    "*.rs": "rustfmt --edition 2024"
+    "*.rs": "rustfmt"
   }
 }

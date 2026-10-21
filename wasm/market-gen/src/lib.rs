@@ -1,9 +1,7 @@
 mod model;
 mod rng;
 
-pub use model::{
-    ConfigError, MAX_BATCH_SIZE, MAX_INSTRUMENTS, MarketGenerator, MarketUpdate, UPDATE_STRIDE,
-};
+pub use model::{ConfigError, MAX_BATCH_SIZE, MAX_INSTRUMENTS, MarketGenerator, MarketUpdate, UPDATE_STRIDE};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(js_name = MarketGenerator)]
