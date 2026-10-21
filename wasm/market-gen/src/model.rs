@@ -13,11 +13,11 @@ const MAX_MID_CENTS: f64 = 10_000_000.0;
 const VOLATILITY: f64 = 0.0005;
 /// Mid drift per unit of book imbalance, in standard deviations.
 const IMBALANCE_DRIFT: f64 = 0.3;
-const SIDE_BIAS: f64 = 0.25;
+const SIDE_BIAS: f64 = 0.15;
 const SPREAD_FRACTION: f64 = 0.0002;
 const BOOK_MEAN: f64 = 500.0;
-const BOOK_REVERSION: f64 = 0.1;
-const BOOK_NOISE: f64 = 80.0;
+const BOOK_REVERSION: f64 = 0.2;
+const BOOK_NOISE: f64 = 50.0;
 const MAX_BOOK_QUANTITY: f64 = 100_000.0;
 const TRADE_QUANTITY_MEAN: f64 = 40.0;
 const MAX_TRADE_QUANTITY: f64 = 1_000.0;
@@ -247,6 +247,13 @@ mod tests {
             distinct.insert(u.price_cents);
         }
         assert!(distinct.len() > 50, "price barely moves");
+    }
+
+    #[test]
+    fn book_sides_rarely_run_empty() {
+        let updates = decode(&generator(42, 50).generate(100_000).unwrap());
+        let empty = updates.iter().filter(|u| u.bid_quantity == 0 || u.ask_quantity == 0).count();
+        assert!(empty < updates.len() / 100, "{empty} of {} updates have an empty side", updates.len());
     }
 
     #[test]
