@@ -11,6 +11,20 @@
     "lint:wasm": "cargo fmt --manifest-path wasm/market-gen/Cargo.toml --check && cargo clippy --manifest-path wasm/market-gen/Cargo.toml --all-targets -- -D warnings",
     "start": "pnpm build:wasm && pnpm --filter web start",
     "build": "pnpm build:wasm && pnpm --filter web build",
-    "test": "pnpm test:wasm && pnpm build:wasm && pnpm --filter web test"
+    "test": "pnpm test:wasm && pnpm build:wasm && pnpm --filter web test",
+    "prepare": "husky",
+    "format": "prettier --write . && cargo fmt --manifest-path wasm/market-gen/Cargo.toml",
+    "format:check": "prettier --check . && cargo fmt --manifest-path wasm/market-gen/Cargo.toml --check"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10"
+  },
+  "lint-staged": {
+    "*.{ts,html,css,json,md,yml,yaml,mjs}": "prettier --write",
+    "*.rs": "rustfmt --edition 2024"
   }
 }
