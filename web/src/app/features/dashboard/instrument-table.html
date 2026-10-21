@@ -18,12 +18,12 @@
       @for (row of rows(); track row.symbol) {
         <tr>
           <th scope="row">{{ row.symbol }}</th>
-          <td><app-value [text]="usd(row.lastPriceCents)" /></td>
-          <td><app-value [text]="usd(row.spreadCents)" /></td>
-          <td><app-value [text]="integer(row.volume)" /></td>
-          <td><app-value [text]="usd(row.vwapCents)" /></td>
-          <td [attr.data-trend]="trend(row.imbalance)">
-            <app-value [text]="imbalance(row.imbalance)" />
+          <td><app-value [text]="row.lastPriceCents | usd" /></td>
+          <td><app-value [text]="row.spreadCents | usd" /></td>
+          <td><app-value [text]="row.volume | integer" /></td>
+          <td><app-value [text]="row.vwapCents | usd" /></td>
+          <td [attr.data-trend]="row.imbalance | trend">
+            <app-value [text]="row.imbalance | imbalance" />
           </td>
         </tr>
       } @empty {

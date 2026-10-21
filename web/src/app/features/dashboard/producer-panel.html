@@ -20,15 +20,15 @@
 <dl>
   <div>
     <dt>Seed</dt>
-    <dd>{{ formatSeed(seed()) }}</dd>
+    <dd>{{ seed() | seed }}</dd>
   </div>
   <div>
     <dt>Batches</dt>
-    <dd>{{ integer(stats().batches) }}</dd>
+    <dd>{{ stats().batches | integer }}</dd>
   </div>
   <div>
     <dt>Updates</dt>
-    <dd>{{ integer(stats().updates) }}</dd>
+    <dd>{{ stats().updates | integer }}</dd>
   </div>
   <div>
     <dt>Nominal rate</dt>
