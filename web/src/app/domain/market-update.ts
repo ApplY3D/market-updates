@@ -1,12 +1,14 @@
-export interface MarketUpdate {
-  readonly instrument: number;
-  readonly priceCents: number;
-  readonly tradeQuantity: number;
-  readonly bidCents: number;
-  readonly askCents: number;
-  readonly bidQuantity: number;
-  readonly askQuantity: number;
-}
+import type { DeepReadonly } from './deep-readonly';
+
+export type MarketUpdate = DeepReadonly<{
+  instrument: number;
+  priceCents: number;
+  tradeQuantity: number;
+  bidCents: number;
+  askCents: number;
+  bidQuantity: number;
+  askQuantity: number;
+}>;
 
 /** Fields per update in the packed `Uint32Array` produced by the Wasm generator. */
 export const UPDATE_STRIDE = 7;

@@ -1,3 +1,4 @@
+import type { DeepReadonly } from '../../domain/deep-readonly';
 import { updateCount } from '../../domain/market-update';
 import { MarketMetrics } from '../../domain/metrics';
 import { isValidSettings, ProducerSettings } from '../../domain/producer-settings';
@@ -8,15 +9,16 @@ import { GeneratorFactory, MarketGenerator, Scheduler } from './ports';
 export type RunCommand = Exclude<ProducerCommand, { type: 'init' }>;
 type StartCommand = Extract<RunCommand, { type: 'start' }>;
 
-interface Run {
-  readonly id: number;
-  readonly settings: ProducerSettings;
-  readonly generator: MarketGenerator;
-  readonly metrics: MarketMetrics;
+type Run = DeepReadonly<{
+  id: number;
+  settings: ProducerSettings;
+  generator: MarketGenerator;
+  metrics: MarketMetrics;
+}> & {
   state: 'running' | 'paused';
   stats: RunStats;
   cancelTick: (() => void) | null;
-}
+};
 
 /** Drives one producer run at a time: generate → aggregate → emit snapshot → schedule next batch. */
 export class ProducerEngine {

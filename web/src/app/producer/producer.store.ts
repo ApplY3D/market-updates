@@ -7,6 +7,7 @@ import {
   Service,
   signal,
 } from '@angular/core';
+import type { DeepReadonly } from '../domain/deep-readonly';
 import { InstrumentMetrics, MarketMetrics } from '../domain/metrics';
 import { DEFAULT_SETTINGS, isValidSettings, ProducerSettings } from '../domain/producer-settings';
 import { PRODUCER_TRANSPORT, ProducerTransport } from './producer-transport';
@@ -18,13 +19,13 @@ export const PRODUCER_SEED = new InjectionToken<() => bigint>('PRODUCER_SEED', {
   factory: () => () => crypto.getRandomValues(new BigUint64Array(1))[0] ?? 0n,
 });
 
-interface Run {
-  readonly id: number;
-  readonly settings: ProducerSettings;
-  readonly seed: bigint;
-  readonly rows: readonly InstrumentMetrics[];
-  readonly stats: RunStats;
-}
+type Run = DeepReadonly<{
+  id: number;
+  settings: ProducerSettings;
+  seed: bigint;
+  rows: InstrumentMetrics[];
+  stats: RunStats;
+}>;
 
 const newRun = (id: number, settings: ProducerSettings, seed: bigint): Run => ({
   id,

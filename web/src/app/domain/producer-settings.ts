@@ -1,8 +1,10 @@
-export interface ProducerSettings {
-  readonly instrumentCount: number;
-  readonly updatesPerBatch: number;
-  readonly batchIntervalMs: number;
-}
+import type { DeepReadonly } from './deep-readonly';
+
+export type ProducerSettings = DeepReadonly<{
+  instrumentCount: number;
+  updatesPerBatch: number;
+  batchIntervalMs: number;
+}>;
 
 export type SettingKey = keyof ProducerSettings;
 

@@ -1,14 +1,15 @@
+import type { DeepReadonly } from './deep-readonly';
 import { symbolFor } from './instruments';
 import { MarketUpdate, readUpdate, updateCount } from './market-update';
 
-export interface InstrumentMetrics {
-  readonly symbol: string;
-  readonly lastPriceCents: number | null;
-  readonly spreadCents: number | null;
-  readonly volume: number;
-  readonly vwapCents: number | null;
-  readonly imbalance: number | null;
-}
+export type InstrumentMetrics = DeepReadonly<{
+  symbol: string;
+  lastPriceCents: number | null;
+  spreadCents: number | null;
+  volume: number;
+  vwapCents: number | null;
+  imbalance: number | null;
+}>;
 
 interface Accumulator {
   latest: MarketUpdate | null;
