@@ -74,8 +74,8 @@ Guaranteed: prices > 0, bid < ask, trade price = bid or ask, trade quantity ≥ 
 
 1. format check, clippy, Rust tests;
 2. Wasm build and Angular tests;
-3. production build with `--base-href /<repo>/`.
+3. production build with the `github-pages` configuration and `--base-href /<repo>/`.
 
-Pushes to `main` also deploy to GitHub Pages; other branches only build and test, because Pages hosts one site. `index.html` is copied to `404.html`, so deep links like `/settings` work.
+Pushes to `main` also deploy to GitHub Pages; other branches only build and test, because Pages hosts one site. Pages can't rewrite deep links to `index.html`, so the `github-pages` configuration switches the router to hash URLs (`/<repo>/#/settings`); local dev keeps path URLs.
 
 One-time setup: **Settings → Pages → Source: GitHub Actions**.

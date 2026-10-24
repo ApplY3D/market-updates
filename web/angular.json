@@ -48,6 +48,14 @@
               ],
               "outputHashing": "all"
             },
+            "github-pages": {
+              "fileReplacements": [
+                {
+                  "replace": "src/app/router-features.ts",
+                  "with": "src/app/router-features.gh-pages.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

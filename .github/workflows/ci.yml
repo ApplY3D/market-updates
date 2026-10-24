@@ -32,9 +32,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint:wasm
       - run: pnpm test
-      - run: pnpm --filter web exec ng build --base-href "/${{ github.event.repository.name }}/"
-      # GitHub Pages has no SPA rewrites; serving index.html as 404 makes deep links work.
-      - run: cp web/dist/market-dashboard/browser/index.html web/dist/market-dashboard/browser/404.html
+      - run: pnpm --filter web exec ng build --configuration production,github-pages --base-href "/${{ github.event.repository.name }}/"
       - uses: actions/upload-pages-artifact@v5
         with:
           path: web/dist/market-dashboard/browser
