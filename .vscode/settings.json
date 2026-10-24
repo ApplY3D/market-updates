@@ -1,0 +1,3 @@
+{
+  "rust-analyzer.linkedProjects": ["wasm/market-gen/Cargo.toml"]
+}
