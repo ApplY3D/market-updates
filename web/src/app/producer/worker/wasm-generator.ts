@@ -2,6 +2,10 @@ import init, { InitInput, MarketGenerator, updateStride } from '@market-gen';
 import { UPDATE_STRIDE } from '../../domain/market-update';
 import { GeneratorFactory } from './ports';
 
+/** Generator wasm copied to the app's `wasm/` asset folder, relative to the document base URI. */
+const WASM_ASSET = 'wasm/market_gen_bg.wasm';
+export const wasmUrl = (baseUri: string): string => new URL(WASM_ASSET, baseUri).href;
+
 /** Initialises the wasm-bindgen module (once per realm) and returns a generator factory. */
 export const loadWasmGenerator = async (source: InitInput): Promise<GeneratorFactory> => {
   await init({ module_or_path: source });

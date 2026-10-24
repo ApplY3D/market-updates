@@ -7,8 +7,10 @@ export type RunStats = DeepReadonly<{
   updates: number;
 }>;
 
+/** Posted by the worker transport on connect. The store never sends it. */
+export type WorkerBoot = DeepReadonly<{ type: 'init'; baseUri: string }>;
+
 export type ProducerCommand = DeepReadonly<
-  | { type: 'init'; wasmUrl: string }
   | { type: 'start'; runId: number; settings: ProducerSettings; seed: bigint }
   | { type: 'pause'; runId: number }
   | { type: 'resume'; runId: number }

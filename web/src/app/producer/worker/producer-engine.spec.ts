@@ -1,8 +1,8 @@
 import { MarketUpdate, packUpdates } from '../../domain/market-update';
 import { ProducerSettings } from '../../domain/producer-settings';
-import { ProducerEvent } from '../protocol';
+import { ProducerCommand, ProducerEvent } from '../protocol';
 import { GeneratorFactory, MarketGenerator, Scheduler } from './ports';
-import { ProducerEngine, RunCommand } from './producer-engine';
+import { ProducerEngine } from './producer-engine';
 
 const settings: ProducerSettings = { instrumentCount: 2, updatesPerBatch: 3, batchIntervalMs: 500 };
 
@@ -53,12 +53,12 @@ const setup = (generateCostMs = 0) => {
     return generator;
   };
   const engine = new ProducerEngine(createGenerator, (e) => events.push(e), scheduler);
-  const send = (command: RunCommand) => engine.handle(command);
+  const send = (command: ProducerCommand) => engine.handle(command);
   const drain = () => events.splice(0);
   return { scheduler, generators, engine, send, drain };
 };
 
-const start = (runId = 1, overrides: Partial<ProducerSettings> = {}): RunCommand => ({
+const start = (runId = 1, overrides: Partial<ProducerSettings> = {}): ProducerCommand => ({
   type: 'start',
   runId,
   seed: 42n,

@@ -1,12 +1,4 @@
-import {
-  computed,
-  DestroyRef,
-  DOCUMENT,
-  inject,
-  InjectionToken,
-  Service,
-  signal,
-} from '@angular/core';
+import { computed, DestroyRef, inject, InjectionToken, Service, signal } from '@angular/core';
 import type { DeepReadonly } from '../domain/deep-readonly';
 import { InstrumentMetrics, MarketMetrics } from '../domain/metrics';
 import { DEFAULT_SETTINGS, isValidSettings, ProducerSettings } from '../domain/producer-settings';
@@ -43,7 +35,6 @@ const isStale = (event: ProducerEvent, runId: number): boolean =>
 export class ProducerStore {
   readonly #createTransport = inject(PRODUCER_TRANSPORT);
   readonly #nextSeed = inject(PRODUCER_SEED);
-  readonly #wasmUrl = new URL('wasm/market_gen_bg.wasm', inject(DOCUMENT).baseURI).href;
 
   readonly #status = signal<ProducerStatus>('loading');
   readonly #error = signal<string | null>(null);
@@ -105,7 +96,6 @@ export class ProducerStore {
   #connect(): ProducerTransport {
     this.#ready = false;
     const transport = this.#createTransport((event) => this.#handle(transport, event));
-    transport.send({ type: 'init', wasmUrl: this.#wasmUrl });
     return transport;
   }
 

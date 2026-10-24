@@ -2,7 +2,15 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { readUpdate, UPDATE_STRIDE, updateCount } from '../../domain/market-update';
 import { GeneratorFactory } from './ports';
-import { loadWasmGenerator } from './wasm-generator';
+import { loadWasmGenerator, wasmUrl } from './wasm-generator';
+
+describe('wasmUrl', () => {
+  it('resolves the wasm asset against the document base URI', () => {
+    expect(wasmUrl('https://example.com/app/')).toBe(
+      'https://example.com/app/wasm/market_gen_bg.wasm',
+    );
+  });
+});
 
 describe('loadWasmGenerator (real Wasm)', () => {
   let create: GeneratorFactory;

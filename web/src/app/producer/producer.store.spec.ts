@@ -52,12 +52,10 @@ const setup = () => {
 };
 
 describe('ProducerStore', () => {
-  it('creates one transport and initialises it with the wasm url resolved against the base href', () => {
-    const { store, transports } = setup();
+  it('creates one transport and sends nothing until it is ready', () => {
+    const { store, transports, transport } = setup();
     expect(transports).toHaveLength(1);
-    expect(transports[0]?.sent).toEqual([
-      { type: 'init', wasmUrl: new URL('wasm/market_gen_bg.wasm', document.baseURI).href },
-    ]);
+    expect(transport().sent).toEqual([]);
     expect(store.status()).toBe('loading');
   });
 
@@ -126,7 +124,7 @@ describe('ProducerStore', () => {
     const { store, transport, lastSent, ready } = setup();
     store.resume();
     store.pause();
-    expect(transport().sent.map((c) => c.type)).toEqual(['init']);
+    expect(transport().sent).toEqual([]);
 
     ready();
     transport().emit({ type: 'snapshot', runId: 1, rows: ROWS, stats: STATS });
@@ -147,7 +145,7 @@ describe('ProducerStore', () => {
     store.pause();
     store.resume();
     store.pause();
-    expect(transport().sent.slice(2)).toEqual([
+    expect(transport().sent.slice(1)).toEqual([
       { type: 'pause', runId: 1 },
       { type: 'resume', runId: 1 },
       { type: 'pause', runId: 1 },
@@ -188,12 +186,12 @@ describe('ProducerStore', () => {
 
     expect(old.disposed).toBe(true);
     expect(transports).toHaveLength(2);
-    expect(transport().sent).toEqual([{ type: 'init', wasmUrl: expect.any(String) }]);
+    expect(transport().sent).toEqual([]);
     expect(store.status()).toBe('loading');
     expect(store.error()).toBeNull();
 
     old.emit({ type: 'ready' });
-    expect(transport().sent).toHaveLength(1);
+    expect(transport().sent).toHaveLength(0);
 
     ready();
     expect(lastSent()).toEqual({ type: 'start', runId: 3, settings: SETTINGS, seed: 103n });

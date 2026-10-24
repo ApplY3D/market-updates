@@ -1,5 +1,5 @@
 import { ProducerTransportFactory } from './producer-transport';
-import { ProducerEvent } from './protocol';
+import { ProducerEvent, WorkerBoot } from './protocol';
 import { errorMessage } from './worker/error-message';
 
 const initError = (message: string): ProducerEvent => ({
@@ -23,6 +23,8 @@ export const workerTransportFactory: ProducerTransportFactory = (onEvent) => {
     worker.onerror = (event) => onEvent(initError(workerFailure(event)));
     worker.onmessageerror = () =>
       onEvent(initError('Producer worker sent a message that could not be decoded.'));
+    const boot: WorkerBoot = { type: 'init', baseUri: document.baseURI };
+    worker.postMessage(boot);
     return { send: (command) => worker.postMessage(command), dispose: () => worker.terminate() };
   } catch (error) {
     const message = `Could not start the producer worker: ${errorMessage(error)}`;

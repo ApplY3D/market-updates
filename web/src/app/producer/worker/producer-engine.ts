@@ -6,8 +6,7 @@ import { ProducerCommand, ProducerEvent, RunStats } from '../protocol';
 import { errorMessage } from './error-message';
 import { GeneratorFactory, MarketGenerator, Scheduler } from './ports';
 
-export type RunCommand = Exclude<ProducerCommand, { type: 'init' }>;
-type StartCommand = Extract<RunCommand, { type: 'start' }>;
+type StartCommand = Extract<ProducerCommand, { type: 'start' }>;
 
 type Run = DeepReadonly<{
   id: number;
@@ -30,7 +29,7 @@ export class ProducerEngine {
     private readonly scheduler: Scheduler,
   ) {}
 
-  handle(command: RunCommand): void {
+  handle(command: ProducerCommand): void {
     if (command.type === 'start') return this.#start(command);
     const run = this.#run;
     if (run?.id !== command.runId) return;
