@@ -2,7 +2,7 @@
 
 Angular dashboard for simulated market data. A Rust library compiled to WebAssembly generates trades and quotes inside a Web Worker; the worker aggregates them and the UI shows per-instrument metrics.
 
-- Live demo: `https://<user>.github.io/<repo>/`
+- Live demo: `https://apply3d.github.io/market-updates`
 - Stack: Angular 22 (zoneless, signals, Signal Forms), Rust + wasm-bindgen, Vitest, GitHub Actions + Pages
 
 ## Run
